@@ -25,6 +25,7 @@ rate of 30 frames per second.
 ## How does it work?
 
 We use mainly [OpenCV](https://opencv.org/) and [dlib](http//dlib.net/) functionality:
+
 - Acquire a webcam video frame with OpenCV
 - Detect the main face in it using the
   [OpenCV haar feature-based cascade classifier](http://docs.opencv.org/3.2.0/d5/d54/group__objdetect.html)
