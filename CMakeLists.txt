@@ -13,8 +13,9 @@ set(WEBCAMHEADTRACKER_SOVERSION 0)
 
 option(WEBCAMHEADTRACKER_BUILD_DOCUMENTATION "Build API reference documentation (requires Doxygen)" OFF)
 
+set(CMAKE_CXX_STANDARD 11)
 if(CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -Wextra")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 endif()
 
 find_package(OpenCV REQUIRED highgui imgproc objdetect calib3d video)
@@ -25,7 +26,8 @@ string(TOLOWER ${OpenCV_DIR} OpenCV_DIR_LOWER)
 find_file(HAARCASCADE_FRONTALFACE_ALT_XML
     haarcascade_frontalface_alt.xml
     ${OpenCV_DIR}/haarcascades 
-    ${OpenCV_DIR_LOWER}/haarcascades)
+    ${OpenCV_DIR_LOWER}/haarcascades
+    /usr/share/opencv4/haarcascades)
 if(${HAARCASCADE_FRONTALFACE_ALT_XML} STREQUAL "HAARCASCADE_FRONTALFACE_ALT_XML-NOTFOUND")
     message(STATUS "haarcascade_frontalface_alt.xml not found -- will be required at run time")
 else()

@@ -226,12 +226,12 @@ bool WebcamHeadTracker::initWebcam()
         return isReady();
     _capture = new cv::VideoCapture(0);
     if (_capture && _capture->isOpened()) {
-        _capture->set(CV_CAP_PROP_FRAME_WIDTH, 640);
-        _capture->set(CV_CAP_PROP_FRAME_HEIGHT, 480);
+        _capture->set(cv::CAP_PROP_FRAME_WIDTH, 640);
+        _capture->set(cv::CAP_PROP_FRAME_HEIGHT, 480);
         _frame = new cv::Mat;
-        _w = _capture->get(CV_CAP_PROP_FRAME_WIDTH);
-        _h = _capture->get(CV_CAP_PROP_FRAME_HEIGHT);
-        _fps = _capture->get(CV_CAP_PROP_FPS);
+        _w = _capture->get(cv::CAP_PROP_FRAME_WIDTH);
+        _h = _capture->get(cv::CAP_PROP_FRAME_HEIGHT);
+        _fps = _capture->get(cv::CAP_PROP_FPS);
         if (_fps <= 0.0f)
             _fps = 30.0f;
         const char* intrinsics;
@@ -462,7 +462,7 @@ bool WebcamHeadTracker::computeHeadPose()
     const int minFaceSize = 80;
     std::vector<cv::Rect> faces;
     _faceCascade->detectMultiScale(*_frame, faces, 1.1, 2,
-            CV_HAAR_SCALE_IMAGE | CV_HAAR_FIND_BIGGEST_OBJECT,
+            cv::CASCADE_SCALE_IMAGE | cv::CASCADE_FIND_BIGGEST_OBJECT,
             cv::Size(minFaceSize, minFaceSize));
     if (faces.size() < 1)
         return false;
@@ -551,7 +551,7 @@ bool WebcamHeadTracker::computeHeadPose()
     tvec.at<double>(2) = 500.0f;
     // in my tests, using the CV_P3P solver with 4 points was less stable than using the iterative solver with 7
     //cv::solvePnP(modelLandmarks, imageLandmarks, cameraMatrix, distCoeffs, rvec, tvec, false, CV_P3P);
-    cv::solvePnP(modelLandmarks, imageLandmarks, cameraMatrix, distCoeffs, rvec, tvec, true, CV_ITERATIVE);
+    cv::solvePnP(modelLandmarks, imageLandmarks, cameraMatrix, distCoeffs, rvec, tvec, true, cv::SOLVEPNP_ITERATIVE);
     double observedVec[3] = { tvec.at<double>(0), tvec.at<double>(1), tvec.at<double>(2) };
     double observedQuat[4];
     rodriguesToQuaternion(&(rvec.at<double>(0)), observedQuat);
