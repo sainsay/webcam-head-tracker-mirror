@@ -470,7 +470,13 @@ bool WebcamHeadTracker::computeHeadPose()
     t1.setNow();
 
     /* Face landmark detection */
+#if 1
+    // A temporary workaround for a Dlib/OpenCV incompatibility:
+    IplImage iplImg = cvIplImage(*_frame);
+    dlib::cv_image<dlib::bgr_pixel> dlibFrame(&iplImg);
+#else
     dlib::cv_image<dlib::bgr_pixel> dlibFrame(*_frame); // does not copy data
+#endif
     dlib::rectangle dlibRect(faceRect.x, faceRect.y,
             faceRect.x + faceRect.width - 1, faceRect.y + faceRect.height - 1);
     dlib::full_object_detection shape = (*_faceModel)(dlibFrame, dlibRect);
