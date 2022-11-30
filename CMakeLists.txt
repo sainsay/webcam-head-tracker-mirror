@@ -13,41 +13,40 @@ set(WEBCAMHEADTRACKER_SOVERSION 0)
 
 option(WEBCAMHEADTRACKER_BUILD_DOCUMENTATION "Build API reference documentation (requires Doxygen)" OFF)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 if(CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 endif()
 
-find_package(OpenCV REQUIRED highgui imgproc objdetect calib3d video)
+find_package(OpenCV CONFIG REQUIRED highgui imgproc objdetect calib3d video)
 include_directories(${OPENCV_INCLUDE_DIRS} )
 link_directories(${OPENCV_LIBRARY_DIRS})
 add_definitions(${OPENCV_DEFINITIONS})
 string(TOLOWER ${OpenCV_DIR} OpenCV_DIR_LOWER)
 find_file(HAARCASCADE_FRONTALFACE_ALT_XML
     haarcascade_frontalface_alt.xml
-    ${OpenCV_DIR}/haarcascades 
-    ${OpenCV_DIR_LOWER}/haarcascades
-    /usr/share/opencv4/haarcascades)
+    ${CMAKE_CURRENT_SOURCE_DIR}/data)
 if(${HAARCASCADE_FRONTALFACE_ALT_XML} STREQUAL "HAARCASCADE_FRONTALFACE_ALT_XML-NOTFOUND")
     message(STATUS "haarcascade_frontalface_alt.xml not found -- will be required at run time")
 else()
     add_definitions(-DHAARCASCADE_FRONTALFACE_ALT_XML=${HAARCASCADE_FRONTALFACE_ALT_XML})
 endif()
 
-find_package(dlib REQUIRED)
+find_package(dlib CONFIG REQUIRED)
 add_definitions(${dlib_DEFINITIONS})
+message( STATUS "dlib dir: ${CMAKE_CURRENT_SOURCE_DIR}" )
 find_file(SHAPE_PREDICTOR_68_FACE_LANDMARKS_DAT
     shape_predictor_68_face_landmarks.dat
-    ${dlib_DIR}/../../../../share/dlib)
+    ${CMAKE_CURRENT_SOURCE_DIR}/data)
 if(SHAPE_PREDICTOR_68_FACE_LANDMARKS_DAT STREQUAL "SHAPE_PREDICTOR_68_FACE_LANDMARKS_DAT-NOTFOUND")
     message(WARNING "shape_predictor_68_face_landmarks.dat not found -- will be required at run time")
 else()
     add_definitions(-DSHAPE_PREDICTOR_68_FACE_LANDMARKS_DAT=${SHAPE_PREDICTOR_68_FACE_LANDMARKS_DAT})
 endif()
 
-add_library(libwebcamheadtracker SHARED
+add_library(libwebcamheadtracker STATIC
 	webcam-head-tracker.cpp webcam-head-tracker.hpp)
-set_target_properties(libwebcamheadtracker PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+#set_target_properties(libwebcamheadtracker PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 set_target_properties(libwebcamheadtracker PROPERTIES OUTPUT_NAME webcamheadtracker)
 set_target_properties(libwebcamheadtracker PROPERTIES VERSION ${WEBCAMHEADTRACKER_LIBVERSION})
 set_target_properties(libwebcamheadtracker PROPERTIES SOVERSION ${WEBCAMHEADTRACKER_SOVERSION})

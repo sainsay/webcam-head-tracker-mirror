@@ -36,6 +36,7 @@
 #include <dlib/opencv.h>
 #include <dlib/image_processing.h>
 
+
 /* Helpers for timing */
 
 class timer
@@ -224,7 +225,12 @@ bool WebcamHeadTracker::initWebcam()
 {
     if (_capture)
         return isReady();
-    _capture = new cv::VideoCapture(0);
+    _capture = new cv::VideoCapture();
+    if (!_capture->open(0)) {
+        delete _capture;
+        _capture = NULL;
+        return false;
+    }
     if (_capture && _capture->isOpened()) {
         _capture->set(cv::CAP_PROP_FRAME_WIDTH, 640);
         _capture->set(cv::CAP_PROP_FRAME_HEIGHT, 480);
@@ -304,6 +310,7 @@ bool WebcamHeadTracker::initPoseEstimator(const char* frontalFaceXml, const char
         dlib::deserialize(faceLandmarksDat) >> *_faceModel;
     }
     catch (std::exception& e) {
+        (void) e;
         delete _faceCascade;
         _faceCascade = NULL;
         delete _faceModel;
